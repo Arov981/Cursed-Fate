@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CURSED FATE // Developer Wiki</title>
+    <style>
+        /* ============================================
+           CURSED FATE - DEVELOPER WIKI
+           Black & White Aesthetic | Typewriter Font
+           ============================================ */
+        
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+        
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #141414;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --border-color: #333333;
+            --border-highlight: #666666;
+            --accent-glow: rgba(255, 255, 255, 0.1);
+            --scanline-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Scanline Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                var(--scanline-color) 2px,
+                var(--scanline-color) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.5;
+        }
+        
+        /* CRT Flicker */
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+        
+        .crt-container {
+            animation: flicker 0.15s infinite;
+        }
+        
+        /* Layout */
+        .wiki-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 320px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            z-index: 1000;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-highlight);
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .logo-title {
+            font-family: 'VT323', monospace;
+            font-size: 2.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        .logo-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-highlight);
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            margin-top: 0.75rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Search */
+        .search-container {
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--border-highlight);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        /* Nav Sections */
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+        
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid var(--border-color);
+        }
+        
+        .nav-list {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.9rem;
+            border-left: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background: var(--bg-tertiary);
+            border-left-color: var(--border-highlight);
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background: var(--bg-tertiary);
+            border-left-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+        
+        .nav-sublist {
+            list-style: none;
+            margin-left: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .nav-subitem {
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-sublink {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-sublink:hover {
+            color: var(--text-secondary);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 320px;
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1400px;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 4rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .hero-title {
+            font-family: 'VT323', monospace;
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .hero-tagline {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+        
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-family: 'VT323', monospace;
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Character Sections */
+        .char-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+            padding: 2.5rem;
+            position: relative;
+        }
+        
+        .char-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--border-highlight);
+        }
+        
+        .char-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .char-name {
+            font-family: 'VT323', monospace;
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .char-title {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+        
+        .char-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .char-meta span {
+            background: var(--bg-tertiary);
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .tier-s { border-color: #ffffff !important; }
+        .tier-a { border-color: #cccccc !important; }
+        .tier-b { border-color: #999999 !important; }
+        
+        .tagline {
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        /* Section Labels */
+        .section-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            margin: 2.5rem 0 1rem 0;
+            padding-left: 1rem;
+            border-left: 3px solid var(--border-highlight);
+        }
+        
+        /* Tables */
+        .moves-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .moves-table thead {
+            background: var(--bg-tertiary);
+        }
+        
+        .moves-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .moves-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+        
+        .moves-table tbody tr:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .input-col {
+            width: 80px;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+        
+        .name-col {
+            font-weight: bold;
+            color: var(--text-primary);
+            width: 200px;
+        }
+        
+        .block-col {
+            width: 100px;
+        }
+        
+        .block-col strong {
+            color: #ff6b6b;
+        }
+        
+        .notes-col {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        /* Ultimate Box */
+        .ult-box {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-highlight);
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .ult-name {
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .ult-voiceline {
+            font-style: italic;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .ult-detail {
+            margin-bottom: 1.5rem;
+        }
+        
+        .ult-detail-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        
+        .ult-detail-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        .ult-detail-text ul {
+            margin-left: 1.5rem;
+        }
+        
+        .ult-detail-text li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Bars Grid */
+        .bars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .bar-cell {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .bar-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .bar-detail {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+        
+        .bar-detail ul {
+            margin-left: 1.5rem;
+        }
+        
+        .bar-detail li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Safeguards List */
+        .safeguards-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        
+        .safeguards-list li {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Counterplay Grid */
+        .counterplay-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .counterplay-cell {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .counterplay-phase {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+        
+        .counterplay-methods {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+        
+        .counterplay-methods li {
+            margin-bottom: 0.5rem;
+            margin-left: 1.5rem;
+        }
+        
+        /* VFX/SFX Specification Box */
+        .vfx-sfx-spec {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .spec-column h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+        
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+        
+        .spec-name {
+            color: var(--text-secondary);
+        }
+        
+        .spec-detail {
+            color: var(--text-muted);
+        }
+        
+        /* Hitbox Data */
+        .hitbox-data {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .hitbox-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        
+        .hitbox-table th,
+        .hitbox-table td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .hitbox-table th {
+            background: var(--bg-tertiary);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+        
+        .hitbox-table td {
+            color: var(--text-secondary);
+        }
+        
+        /* Dev Notes */
+        .dev-notes {
+            background: var(--bg-tertiary);
+            border-left: 4px solid var(--border-highlight);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .dev-notes-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .dev-notes-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.9rem;
+        }
+        
+        .dev-notes-content ul {
+            margin-left: 1.5rem;
+        }
+        
+        .dev-notes-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 3rem;
+            margin-top: 4rem;
+            border-top: 2px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+        }
+        
+        .footer-line {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 280px;
+            }
+            .main-content {
+                margin-left: 280px;
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .mobile-toggle {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                color: var(--text-primary);
+                padding: 0.75rem;
+                cursor: pointer;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .char-section {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        /* Code blocks */
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted var(--border-highlight);
+        }
+        
+        .tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-highlight);
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="crt-container">
+    <div class="wiki-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-section">
+                <h1 class="logo-title">Cursed Fate</h1>
+                <p class="logo-subtitle">Developer Documentation Wiki</p>
+                <span class="version-badge">v3.0 // BUILD ALPHA</span>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search characters, moves, mechanics...">
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-section-title">Core Systems</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#combat-system" class="nav-link">Combat System</a></li>
+                    <li class="nav-item"><a href="#resource-bars" class="nav-link">Three Bar System</a></li>
+                    <li class="nav-item"><a href="#frame-data" class="nav-link">Frame Data Standards</a></li>
+                    <li class="nav-item"><a href="#hitbox-guide" class="nav-link">Hitbox Guidelines</a></li>
+                    <li class="nav-item"><a href="#vfx-specs" class="nav-link">VFX Specifications</a></li>
+                    <li class="nav-item"><a href="#sfx-library" class="nav-link">SFX Library</a></li>
+                </ul>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-section-title">S-Tier Characters</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#gojo" class="nav-link">Gojo Satoru</a>
+                        <ul class="nav-sublist">
+                            <li class="nav-subitem"><a href="#gojo-passive" class="nav-sublink">Passive: Infinity</a></li>
+                            <li class="nav-subitem"><a href="#gojo-moves" class="nav-sublink">Base Moves</a></li>
+                            <li class="nav-subitem"><a href="#gojo-ult" class="nav-sublink">Unlimited Void</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="#yuji-sukuna" class="nav-link">Yuji / Sukuna</a>
+                        <ul class="nav-sublist">
+                            <li class="nav-subitem"><a href="#yuji-base" class="nav-sublink">Yuji Mode</a></li>
+                            <li class="nav-subitem"><a href="#sukuna-base" class="nav-sublink">Sukuna Mode</a></li>
+                            <li class="nav-subitem"><a href="#sukuna-ult" class="nav-sublink">Malevolent Shrine</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="#mahito" class="nav-link">Mahito</a>
+                        <ul class="nav-sublist">
+                            <li class="nav-subitem"><a href="#mahito-stances" class="nav-sublink">Stance System</a></li>
+                            <li class="nav-subitem"><a href="#mahito-moves" class="nav-sublink">Base Moves</a></li>
+                            <li class="nav-subitem"><a href="#mahito-ult" class="nav-sublink">True Form</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="#nanami" class="nav-link">Nanami Kento</a>
+                        <ul class="nav-sublist">
+                            <li class="nav-subitem"><a href="#nanami-ratio" class="nav-sublink">Ratio Technique</a></li>
+                            <li class="nav-subitem"><a href="#nanami-moves" class="nav-sublink">Base Moves</a></li>
+                            <li class="nav-subitem"><a href="#nanami-overtime" class="nav-sublink">Overtime Mode</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-section-title">A-Tier Characters</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#megumi" class="nav-link">Megumi Fushiguro</a></li>
+                    <li class="nav-item"><a href="#maki" class="nav-link">Maki Zenin</a></li>
+                    <li class="nav-item"><a href="#todo" class="nav-link">Aoi Todo</a></li>
+                    <li class="nav-item"><a href="#hakari" class="nav-link">Kinji Hakari</a></li>
+                    <li class="nav-item"><a href="#yuta" class="nav-link">Yuta Okkotsu</a></li>
+                    <li class="nav-item"><a href="#kashimo" class="nav-link">Kashimo Hajime</a></li>
+                    <li class="nav-item"><a href="#choso" class="nav-link">Choso</a></li>
+                </ul>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-section-title">B-Tier Characters</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#mechamaru" class="nav-link">Mechamaru</a></li>
+                    <li class="nav-item"><a href="#miwa" class="nav-link">Miwa Kasumi</a></li>
+                    <li class="nav-item"><a href="#inokuma" class="nav-link">Ino Takuma</a></li>
+                    <li class="nav-item"><a href="#uiui" class="nav-link">Ui Ui</a></li>
+                    <li class="nav-item"><a href="#momo" class="nav-link">Momo Nishimiya</a></li>
+                </ul>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-section-title">Development</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#balance-philosophy" class="nav-link">Balance Philosophy</a></li>
+                    <li class="nav-item"><a href="#optimization" class="nav-link">Performance Optimization</a></li>
+                    <li class="nav-item"><a href="#netcode" class="nav-link">Netcode Standards</a></li>
+                    <li class="nav-item"><a href="#testing-procedures" class="nav-link">Testing Procedures</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1 class="hero-title">Cursed Fate</h1>
+                <p class="hero-tagline">
+                    Comprehensive Developer Documentation for the Next Generation Jujutsu Kaisen Fighting Game.
+                    This wiki contains exhaustive technical specifications for all character mechanics, 
+                    visual effects, sound design, hitbox data, frame information, and balance safeguards.
+                </p>
+                
+                <div class="hero-stats">
+                    <div class="stat-box">
+                        <span class="stat-number">15</span>
+                        <span class="stat-label">Launch Characters</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">S-Tier Kits</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number">200+</span>
+                        <span class="stat-label">Unique Moves</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">VFX Assets</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number">300+</span>
+                        <span class="stat-label">SFX Files</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number">60fps</span>
+                        <span class="stat-label">Target Frame Rate</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Combat System -->
+            <section class="char-section" id="combat-system">
+                <div class="char-header">
+                    <h2 class="char-name">Combat System Overview</h2>
+                    <div class="char-title">Core Fighting Mechanics</div>
+                </div>
+                
+                <p class="description">
+                    Cursed Fate implements a precision-based combat system designed to eliminate RNG frustration 
+                    while maintaining high skill ceilings. Every interaction is deterministic, readable, and counterable.
+                </p>
+                
+                <div class="section-label">Fundamental Mechanics</div>
+                <table class="moves-table">
+                    <thead>
+                        <tr>
+                            <th>Mechanic</th>
+                            <th>Description</th>
+                            <th>Frame Window</th>
+                            <th>Dev Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="name-col">Basic Attack (M1)</td>
+                            <td>Standard melee combo string. 4-hit chain with diminishing returns on hitstun.</td>
+                            <td>12f startup, 8f recovery</td>
+                            <td class="notes-col">4th hit = soft knockdown. Cannot be canceled into specials after 3rd hit.</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Block</td>
+                            <td>Universal defensive option. Reduces damage by 70% but builds chip damage.</td>
+                            <td>3f startup, 5f recovery on release</td>
+                            <td class="notes-col">Guard break at 100% chip bar. Unblockable attacks bypass entirely.</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Dodge/Evasive</td>
+                            <td>Spend Evasive Bar for i-frame dodge roll.</td>
+                            <td>8f total duration, 4f i-frames</td>
+                            <td class="notes-col">3 charges, 15s recharge per charge. Directional input affects roll distance.</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Parry</td>
+                            <td>Frame-perfect deflect. Returns opponent to neutral state.</td>
+                            <td>2f active window</td>
+                            <td class="notes-col">Only works on melee attacks. Whiff punishes severely. High risk/reward.</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Grab/Throw</td>
+                            <td>Command grab that bypasses blocking.</td>
+                            <td>5f startup, 20f recovery</td>
+                            <td class="notes-col">Can be tech'd within 10f. Air throws available for specific characters.</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Black Flash</td>
+                            <td>Critical hit mechanic on perfectly timed strikes.</td>
+                            <td>3-5f timing window</td>
+                            <td class="notes-col">1.5x damage multiplier. Distinct VFX/SFX. Cannot be buffered.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="dev-notes">
+                    <div class="dev-notes-title">Developer Implementation Notes</div>
+                    <div class="dev-notes-content">
+                        <ul>
+                            <li><strong>Hitstop:</strong> Apply 8f hitstop on all successful hits for weight feel. 12f on Black Flash.</li>
+                            <li><strong>Pushback:</strong> Scaling pushback on combo strings prevents infinite combos without resource investment.</li>
+                            <li><strong>Damage Fall-off:</strong> All moves deal 80% damage after 3rd hit in a combo sequence.</li>
+                            <li><strong>Stun Decay:</strong> Stun buildup decays at 2% per second when not taking damage.</li>
+                            <li><strong>Recovery Cancels:</strong> Only special moves can cancel basic attack recovery frames. Ultimates can cancel anything.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Three Bar System -->
+            <section class="char-section" id="resource-bars">
+                <div class="char-header">
+                    <h2 class="char-name">Three Bar System</h2>
+                    <div class="char-title">Resource Management Framework</div>
+                </div>
+                
+                <p class="description">
+                    Every character operates on three distinct resource bars that create strategic depth 
+                    and prevent spam-heavy gameplay. Each bar serves a unique purpose and regenerates differently.
+                </p>
+                
+                <div class="bars-grid">
+                    <div class="bar-cell">
+                        <div class="bar-label">Ultimate Bar</div>
+                        <ul class="bar-detail">
+                            <li><strong>Capacity:</strong> 100% (fills through damage dealt/taken, time survival)</li>
+                            <li><strong>Fill Rate:</strong> 0.5% per second passive, 2% per 10 damage dealt, 1% per 15 damage taken</li>
+                            <li><strong>Usage:</strong> Activates character-specific ultimate ability</li>
+                            <li><strong>Duration:</strong> Typically 90-150 seconds depending on character</li>
+                            <li><strong>Burnout:</strong> 15-second cooldown post-ultimate where bar cannot fill</li>
+                            <li><strong>VFX:</strong> Bar glows white when &gt;80%, pulses at 100%</li>
+                            <li><strong>SFX:</strong> Rising hum as bar fills, sharp chime at full</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bar-cell">
+                        <div class="bar-label">Evasive Bar</div>
+                        <ul class="bar-detail">
+                            <li><strong>Capacity:</strong> 3 charges</li>
+                            <li><strong>Recharge:</strong> 15 seconds per charge (sequential, not parallel)</li>
+                            <li><strong>Usage:</strong> Dodge rolls, emergency escapes, certain movement options</li>
+                            <li><strong>Depletion:</strong> Instant on use</li>
+                            <li><strong>VFX:</strong> Individual pips fade as charges used, refill animation per charge</li>
+                            <li><strong>SFX:</strong> Soft click on use, ascending tones on recharge complete</li>
+                            <li><strong>Strategic Note:</strong> Running dry leaves player vulnerable to pressure</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bar-cell">
+                        <div class="bar-label">Technique Bar (R-Skill)</div>
+                        <ul class="bar-detail">
+                            <li><strong>Capacity:</strong> Character-dependent (some have CD, some have charges)</li>
+                            <li><strong>Cooldown Types:</strong> Fixed CD (4-8s), Charge-based (2-3 stacks), Conditional (reset on success)</li>
+                            <li><strong>Usage:</strong> Signature techniques, stance changes, unique mechanics</li>
+                            <li><strong>VFX:</strong> Bar depletes on use, refills based on cooldown type</li>
+                            <li><strong>SFX:</strong> Unique per character, typically elemental or technique-specific</li>
+                            <li><strong>Balance:</strong> Primary tool for neutral game control</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="dev-notes">
+                    <div class="dev-notes-title">Resource Balance Philosophy</div>
+                    <div class="dev-notes-content">
+                        <ul>
+                            <li>Never allow all three bars to synergize into an "unstoppable" state simultaneously.</li>
+                            <li>Ultimate should feel impactful but not automatically win-neutral.</li>
+                            <li>Evasive bar must be scarce enough to matter but frequent enough to not feel oppressive.</li>
+                            <li>Technique bar defines character identity—make it spammable only if low-impact.</li>
+                            <li>Visual clarity is paramount: players must always know their resource state at a glance.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Frame Data Standards -->
+            <section class="char-section" id="frame-data">
+                <div class="char-header">
+                    <h2 class="char-name">Frame Data Standards</h2>
+                    <div class="char-title">Technical Timing Reference</div>
+                </div>
+                
+                <div class="hitbox-data">
+                    <table class="hitbox-table">
+                        <thead>
+                            <tr>
+                                <th>Move Type</th>
+                                <th>Startup (f)</th>
+                                <th>Active (f)</th>
+                                <th>Recovery (f)</th>
+                                <th>Total (f)</th>
+                                <th>On Block</th>
+                                <th>On Hit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jab (M1)</td>
+                                <td>10-12</td>
+                                <td>4</td>
+                                <td>15-18</td>
+                                <td>29-34</td>
+                                <td>-2 to -5</td>
+                                <td>+3 to +6</td>
+                            </tr>
+                            <tr>
+                                <td>Heavy Attack</td>
+                                <td>18-25</td>
+                                <td>6</td>
+                                <td>25-35</td>
+                                <td>49-66</td>
+                                <td>-8 to -15</td>
+                                <td>+8 to +15 (knockdown)</td>
+                            </tr>
+                            <tr>
+                                <td>Special Move (Light)</td>
+                                <td>12-16</td>
+                                <td>8-12</td>
+                                <td>20-25</td>
+                                <td>40-53</td>
+                                <td>-3 to -8</td>
+                                <td>+5 to +10</td>
+                            </tr>
+                            <tr>
+                                <td>Special Move (Heavy)</td>
+                                <td>20-30</td>
+                                <td>10-15</td>
+                                <td>30-40</td>
+                                <td>60-85</td>
+                                <td>-10 to -20</td>
+                                <td>Knockdown / Wall splat</td>
+                            </tr>
+                            <tr>
+                                <td>Command Grab</td>
+                                <td>5-8</td>
+                                <td>10</td>
+                                <td>20-30</td>
+                                <td>35-48</td>
+                                <td>N/A</td>
+                                <td>+15 to +25</td>
+                            </tr>
+                            <tr>
+                                <td>Counter/Parry</td>
+                                <td>2-3</td>
+                                <td>2-4</td>
+                                <td>15-20</td>
+                                <td>19-27</td>
+                                <td>N/A</td>
+                                <td>+20 (on successful parry)</td>
+                            </tr>
+                            <tr>
+                                <td>Dodge Roll</td>
+                                <td>3</td>
+                                <td>8 (4 i-frame)</td>
+                                <td>12</td>
+                                <td>23</td>
+                                <td>N/A</td>
+                                <td>N/A</td>
+                            </tr>
+                            <tr>
+                                <td>Ultimate Activation</td>
+                                <td>15-30 (cutscene)</td>
+                                <td>Varies</td>
+                                <td>10-20</td>
+                                <td>Varies</td>
+                                <td>i-frame during activation</td>
+                                <td>N/A</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="section-label">Frame Data Notation Guide</div>
+                <p class="description">
+                    <strong>Startup:</strong> Frames before first active frame. Lower = faster.<br>
+                    <strong>Active:</strong> Frames where hitbox can connect. Multiple active windows possible.<br>
+                    <strong>Recovery:</strong> Frames after last active frame before return to neutral.<br>
+                    <strong>Total:</strong> Startup + Active + Recovery.<br>
+                    <strong>On Block:</strong> Frame advantage/disadvantage when blocked. Negative = punishable.<br>
+                    <strong>On Hit:</strong> Frame advantage on successful hit. Positive = can continue pressure.
+                </p>
+                
+                <div class="dev-notes">
+                    <div class="dev-notes-title">Critical Frame Data Rules</div>
+                    <div class="dev-notes-content">
+                        <ul>
+                            <li>No move shall exceed 30f startup unless balanced by extreme range, damage, or utility.</li>
+                            <li>Punishable moves (&lt;-10 on block) must provide clear telegraphing.</li>
+                            <li>Safe moves (-5 or better) must have limited range or low damage.</li>
+                            <li>All combos must have a hard ender by hit 6 unless ultimate is active.</li>
+                            <li>True blockstrings cannot exceed 12 hits without spending resources.</li>
+                            <li>Infinite combo prevention: all hitstun scales down 10% per consecutive hit.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Hitbox Guidelines -->
+            <section class="char-section" id="hitbox-guide">
+                <div class="char-header">
+                    <h2 class="char-name">Hitbox Guidelines</h2>
+                    <div class="char-title">Collision Detection Standards</div>
+                </div>
+                
+                <p class="description">
+                    Consistent, readable hitboxes are essential for competitive integrity. All hitboxes must follow 
+                    these specifications to ensure fair play and predictable interactions.
+                </p>
+                
+                <div class="section-label">Hitbox Categories</div>
+                <table class="moves-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Dimensions</th>
+                            <th>Use Case</th>
+                            <th>Visual Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="name-col">Melee Point</td>
+                            <td>3-5 stud radius sphere</td>
+                            <td>Fists, weapons, close-range strikes</td>
+                            <td>White flash on contact, 8f hitstop</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Melee Arc</td>
+                            <td>8-12 stud arc, 45-90° angle</td>
+                            <td>Swinging weapons, wide slashes</td>
+                            <td>Trail effect matching weapon color</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Projectile Small</td>
+                            <td>2-3 stud sphere</td>
+                            <td>Energy bolts, thrown objects</td>
+                            <td>Glowing core with particle trail</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Projectile Large</td>
+                            <td>5-8 stud sphere</td>
+                            <td>Heavy projectiles, AoE blasts</td>
+                            <td>Expanding ring on impact</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Beam Linear</td>
+                            <td>2-4 stud width, up to 50 stud length</td>
+                            <td>Laser attacks, energy beams</td>
+                            <td>Continuous beam with pulse effect</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">AoE Circle</td>
+                            <td>10-25 stud radius</td>
+                            <td>Ground slams, explosion zones</td>
+                            <td>Expanding ripple from center</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">AoE Cone</td>
+                            <td>15-30 stud length, 60-120° angle</td>
+                            <td>Forward cones, breath attacks</td>
+                            <td>Fan-shaped particle burst</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Grab Zone</td>
+                            <td>5-8 stud frontal hemisphere</td>
+                            <td>Command grabs, throws</td>
+                            <td>Hand/gesture indicator, red highlight on target</td>
+                        </tr>
+                        <tr>
+                            <td class="name-col">Sure-Hit</td>
+                            <td>Variable (bypasses traditional collision)</td>
+                            <td>Domain expansions, guaranteed hits</td>
+                            <td>Screen-wide effect, distinct color shift</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="section-label">Hitbox Implementation Rules</div>
+                <ul class="safeguards-list">
+                    <li>All hitboxes must have corresponding hurtboxes on character models (head, torso, limbs).</li>
+                    <li>Hitbox duration must match stated active frames exactly—no hidden extensions.</li>
+                    <li>Multi-hit moves must have minimum 3f gaps between hit activations.</li>
+                    <li>Projectile hitboxes must persist for entire travel distance or have clear dissipation point.</li>
+                    <li>AoE hitboxes must have visible ground indicators for 0.5s before activation.</li>
+                    <li>Grab hitboxes cannot intersect with wall geometry—auto-fail if obstructed.</li>
+                    <li>Hitbox size cannot scale with damage—what you see is what you get.</li>
+                    <li>All hitboxes must be testable in dev mode with debug visualization toggle.</li>
+                </ul>
+                
+                <div class="dev-notes">
+                    <div class="dev-notes-title">Debug Tools for Hitbox Testing</div>
+                    <div class="dev-notes-content">
+                        <ul>
+                            <li><strong>F1:</strong> Toggle hitbox visualization (green = active, red = hurtbox, yellow = projectile)</li>
+                            <li><strong>F2:</strong> Show frame counter overlay</li>
+                            <li><strong>F3:</strong> Display damage numbers with hitstun values</li>
+                            <li><strong>F4:</strong> Slow-motion mode (0.25x, 0.5x, 0.75x toggles)</li>
+                            <li><strong>F5:</strong> Reset character positions to neutral spacing</li>
+                            <li><strong>Console Command:</strong> /hitboxdebug [character] [move] for isolated testing</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- VFX Specifications -->
+            <section class="char-section" id="vfx-specs">
+                <div class="char-header">
+                    <h2 class="char-name">VFX Specifications</h2>
+                    <div class="char-title">Visual Effects Asset Library</div>
+                </div>
+                
+                <p class="description">
+                    Every ability in Cursed Fate requires specific visual effects to communicate intent, 
+                    impact, and status. This section catalogs all VFX assets with technical requirements.
+                </p>
+                
+                <div class="section-label">Core VFX Categories</div>
+                
+                <div class="vfx-sfx-spec">
+                    <div class="spec-grid">
+                        <div class="spec-column">
+                            <h4>Trailed Effects</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_001_SpeedLines</span>
+                                <span class="spec-detail">White streaks, 0.3s duration</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_002_CEEnergy</span>
+                                <span class="spec-detail">Purple swirl particles, 1-3s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_003_LightningArc</span>
+                                <span class="spec-detail">Yellow bolt, 0.5s, chains to 3 targets</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_004_FlameTrail</span>
+                                <span class="spec-detail">Orange-red gradient, 0.8s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_005_IceShards</span>
+                                <span class="spec-detail">Blue crystalline fragments, 1.2s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_006_ShadowTendrils</span>
+                                <span class="spec-detail">Black wisps, 2s persistent</span>
+                            </div>
+                        </div>
+                        
+                        <div class="spec-column">
+                            <h4>Impact Effects</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_101_HitSpark</span>
+                                <span class="spec-detail">White starburst, 0.2s, scales with damage</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_102_BloodSplatter</span>
+                                <span class="spec-detail">Red droplets, physics-based, 3s fade</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_103_BlockShield</span>
+                                <span class="spec-detail">Hexagonal barrier, 0.5s on block start</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_104_BlackFlash</span>
+                                <span class="spec-detail">Black void with purple rim, 0.4s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_105_ExplosionSmall</span>
+                                <span class="spec-detail">5-stud radius fireball, 1s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_106_ExplosionLarge</span>
+                                <span class="spec-detail">15-stud radius, 2s with debris</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="vfx-sfx-spec">
+                    <div class="spec-grid">
+                        <div class="spec-column">
+                            <h4>Aura Effects</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_201_CEFlare</span>
+                                <span class="spec-detail">Ambient purple glow, pulsing 2s cycle</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_202_RageAura</span>
+                                <span class="spec-detail">Red-orange rising particles, intensifies with HP loss</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_203_DomainBarrier</span>
+                                <span class="spec-detail">Translucent wall pattern, environment-specific</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_204_SureHitMark</span>
+                                <span class="spec-detail">Glowing sigil above target, 3s duration</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_205_TeleportRing</span>
+                                <span class="spec-detail">Expanding circle at origin/destination, 0.5s</span>
+                            </div>
+                        </div>
+                        
+                        <div class="spec-column">
+                            <h4>UI/HUD Effects</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_301_BarFill</span>
+                                <span class="spec-detail">Gradient fill animation, 0.3s smooth</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_302_BarDeplete</span>
+                                <span class="spec-detail">Drain effect with particle burst at empty</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_303_UltimateReady</span>
+                                <span class="spec-detail">Pulsing gold border, 1s cycle</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_304_DamageNumber</span>
+                                <span class="spec-detail">Floating text, color-coded by type</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">VFX_305_StatusIcon</span>
+                                <span class="spec-detail">Buff/debuff symbols, 0.5s animate-in</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-label">VFX Performance Budget</div>
+                <ul class="safeguards-list">
+                    <li>Maximum 50 active particle systems per player at any time.</li>
+                    <li>Ultimate sequences capped at 200 simultaneous particles.</li>
+                    <li>All textures must be power-of-2 dimensions (64x64, 128x128, 256x256 max).</li>
+                    <li>Shader complexity: maximum 200 instructions per pixel shader.</li>
+                    <li>LOD system: reduce particle count by 50% at 50+ stud distance.</li>
+                    <li>Mobile optimization: automatic 40% reduction in particle density.</li>
+                    <li>No alpha-blended overlapping particles beyond 3 layers.</li>
+                    <li>All VFX must pass 60fps test in 20-player stress scenario.</li>
+                </ul>
+            </section>
+            
+            <!-- SFX Library -->
+            <section class="char-section" id="sfx-library">
+                <div class="char-header">
+                    <h2 class="char-name">SFX Library</h2>
+                    <div class="char-title">Sound Effect Asset Catalog</div>
+                </div>
+                
+                <p class="description">
+                    Audio feedback is crucial for game feel. Each action must have distinct, layered sound effects 
+                    that communicate weight, impact, and status without overwhelming the mix.
+                </p>
+                
+                <div class="vfx-sfx-spec">
+                    <div class="spec-grid">
+                        <div class="spec-column">
+                            <h4>Combat Sounds</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_001_PunchLight</span>
+                                <span class="spec-detail">Sharp thud, 0.2s, mid frequency</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_002_PunchHeavy</span>
+                                <span class="spec-detail">Deep impact with sub-bass, 0.4s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_003_Kick</span>
+                                <span class="spec-detail">Whoosh + impact, 0.3s total</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_004_BladeSlash</span>
+                                <span class="spec-detail">Metallic ring with air cut, 0.25s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_005_BladeImpact</span>
+                                <span class="spec-detail">Steel on flesh, 0.3s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_006_Block</span>
+                                <span class="spec-detail">Energy shield hum, 0.15s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_007_Parry</span>
+                                <span class="spec-detail">High-pitched deflection chime, 0.2s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_008_BlackFlash</span>
+                                <span class="spec-detail">Distinctive crack with reverb, 0.5s</span>
+                            </div>
+                        </div>
+                        
+                        <div class="spec-column">
+                            <h4>Movement Sounds</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_101_FootstepRun</span>
+                                <span class="spec-detail">Quick steps, randomized pitch, 0.1s each</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_102_FootstepLand</span>
+                                <span class="spec-detail">Thud on landing, scales with fall distance</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_103_DodgeRoll</span>
+                                <span class="spec-detail">Fabric rustle + air whoosh, 0.3s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_104_Teleport</span>
+                                <span class="spec-detail">Vacuum pop + echo, 0.4s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_105_Dash</span>
+                                <span class="spec-detail">Quick burst of wind, 0.2s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_106_WallJump</span>
+                                <span class="spec-detail">Scrape + push-off, 0.25s</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="vfx-sfx-spec">
+                    <div class="spec-grid">
+                        <div class="spec-column">
+                            <h4>Ability Sounds</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_201_EnergyCharge</span>
+                                <span class="spec-detail">Rising hum, pitch increases 0.5-2s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_202_ProjectileFire</span>
+                                <span class="spec-detail">Concussive blast, 0.3s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_203_BeamFiring</span>
+                                <span class="spec-detail">Continuous laser hum, loopable</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_204_ExplosionSmall</span>
+                                <span class="spec-detail">Sharp boom with debris rattle, 0.6s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_205_ExplosionLarge</span>
+                                <span class="spec-detail">Multi-layer rumble, 2s decay</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_206_GrabSuccess</span>
+                                <span class="spec-detail">Clothing grab + struggle noise, 0.4s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_207_StatusApply</span>
+                                <span class="spec-detail">Magical chime, varies by status type</span>
+                            </div>
+                        </div>
+                        
+                        <div class="spec-column">
+                            <h4>UI/System Sounds</h4>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_301_MenuSelect</span>
+                                <span class="spec-detail">Soft click, 0.1s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_302_MenuConfirm</span>
+                                <span class="spec-detail">Positive chime, 0.2s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_303_BarFillTick</span>
+                                <span class="spec-detail">Subtle ascending tone per 10%</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_304_UltimateReady</span>
+                                <span class="spec-detail">Dramatic sting, 0.8s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_305_UltimateActivate</span>
+                                <span class="spec-detail">Character-specific theme sting, 1-2s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_306_RoundStart</span>
+                                <span class="spec-detail">Bell/gong, 1.5s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_307_RoundEnd</span>
+                                <span class="spec-detail">Victory/defeat stings, 2s</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-name">SFX_308_KO</span>
+                                <span class="spec-detail">Heavy impact + silence, 3s total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-label">Audio Mixing Guidelines</div>
+                <ul class="safeguards-list">
+                    <li>Master volume: combat SFX at -6dB, UI SFX at -12dB, music at -18dB.</li>
+                    <li>Dynamic range compression: 4:1 ratio on impact sounds to prevent clipping.</li>
+                    <li>Priority system: KO/ultimate SFX always override ambient/footstep sounds.</li>
+                    <li>3D audio: all positional sounds must use spatial audio with 50-stud falloff.</li>
+                    <li>Voice lines: duck music by -10dB during character dialogue.</li>
+                    <li>Loop management: seamless loops for sustained effects (beams, auras).</li>
+                    <li>Platform optimization: mono fallback for mobile, stereo minimum, 5.1 surround optional.</li>
+                    <li>File format: .wav for development, compressed .ogg for build (quality 0.7).</li>
+                </ul>
+            </section>
+
+            <!-- Footer -->
+            <footer class="page-footer">
+                <div class="footer-line">CURSED FATE // DEVELOPER WIKI v3.0</div>
+                <div class="footer-line">Complete Character Design Bible | Full VFX/SFX Library | Hitbox Data | Frame Standards</div>
+                <div class="footer-line">15 Launch Characters | 200+ Unique Moves | 500+ VFX Assets | 300+ SFX Files</div>
+                <div class="footer-line" style="margin-top: 2rem;">INTERNAL USE ONLY - DO NOT DISTRIBUTE</div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Search functionality
+        (function() {
+            var searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+            
+            searchInput.addEventListener('input', function(e) {
+                var query = e.target.value.toLowerCase().trim();
+                
+                document.querySelectorAll('.char-section').forEach(function(section) {
+                    var content = section.textContent.toLowerCase();
+                    section.style.display = !query || content.indexOf(query) !== -1 ? '' : 'none';
+                });
+                
+                document.querySelectorAll('.nav-item').forEach(function(item) {
+                    var link = item.querySelector('.nav-link');
+                    var text = link.textContent.toLowerCase();
+                    var href = link.getAttribute('href');
+                    var targetId = href.substring(1);
+                    var targetSection = document.getElementById(targetId);
+                    var isVisible = targetSection && targetSection.style.display !== 'none';
+                    item.style.display = (!query || text.indexOf(query) !== -1 || isVisible) ? '' : 'none';
+                });
+            });
+        })();
+        
+        // Active nav highlighting on scroll
+        (function() {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.nav-link').forEach(function(link) {
+                            link.classList.remove('active');
+                        });
+                        var activeLink = document.querySelector('.nav-link[href="#' + entry.target.id + '"]');
+                        if (activeLink) activeLink.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+            
+            document.querySelectorAll('.char-section, .hero-section').forEach(function(section) {
+                observer.observe(section);
+            });
+        })();
+        
+        // Smooth scroll for nav links
+        document.querySelectorAll('.nav-link, .nav-sublink').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                var targetId = this.getAttribute('href');
+                var target = document.querySelector(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        console.log('CURSED FATE Wiki loaded successfully.');
+        console.log('Press F1 for hitbox debug mode (in-game only).');
+    </script>
+</body>
+</html>
