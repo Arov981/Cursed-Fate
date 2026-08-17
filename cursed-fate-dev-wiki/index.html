@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CURSED FATE // DEVELOPER WIKI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#000;--bg2:#0a0a0a;--bg3:#141414;--text:#fff;--text2:#ccc;--muted:#888;--border:#333}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;line-height:1.6}
+        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.03) 3px,transparent 4px);pointer-events:none;z-index:9999}
+        .wiki-container{display:flex;min-height:100vh}
+        .sidebar{width:300px;background:var(--bg2);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;padding:1.5rem;z-index:1000}
+        .wiki-title{font-family:'VT323',monospace;font-size:2rem;font-weight:bold;letter-spacing:4px;text-transform:uppercase;margin-bottom:0.5rem;border-bottom:2px solid #fff;padding-bottom:1rem}
+        .search-input{width:100%;padding:0.75rem;background:var(--bg);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono';margin:1rem 0}
+        .nav-section{margin:1.5rem 0}
+        .nav-section-title{font-family:'VT323';font-size:1rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;color:var(--text2);border-bottom:1px solid var(--border);padding-bottom:0.5rem}
+        .nav-list{list-style:none}
+        .nav-item{margin:0.3rem 0}
+        .nav-link{display:block;padding:0.5rem 0.75rem;color:var(--text2);text-decoration:none;font-size:0.85rem;letter-spacing:1px;border-left:2px solid transparent;transition:all 0.2s}
+        .nav-link:hover,.nav-link.active{color:#fff;background:var(--bg3);border-left-color:#fff}
+        .main-content{margin-left:300px;padding:2rem 3rem;max-width:1400px}
+        .hero{background:var(--bg2);border:1px solid var(--border);padding:2rem;margin-bottom:3rem}
+        .hero h1{font-family:'VT323';font-size:3rem;letter-spacing:6px;text-transform:uppercase;margin-bottom:1rem}
+        .hero p{color:var(--text2);max-width:800px;line-height:1.8}
+        .char-section{background:var(--bg2);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;scroll-margin-top:1rem}
+        .char-name{font-family:'VT323';font-size:2.5rem;letter-spacing:5px;text-transform:uppercase;border-bottom:2px solid #fff;padding-bottom:0.5rem;margin-bottom:0.5rem}
+        .char-title{color:var(--muted);letter-spacing:3px;margin-bottom:1rem}
+        .section-label{font-family:'VT323';font-size:1.3rem;letter-spacing:3px;text-transform:uppercase;margin:1.5rem 0 1rem;border-bottom:1px solid var(--border);padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.85rem}
+        th{text-align:left;padding:0.75rem;background:var(--bg);font-family:'VT323';letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #fff}
+        td{padding:0.75rem;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text2)}
+        .input-col{width:70px;font-family:'VT323';font-weight:bold;color:#fff}
+        .bars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
+        .bar-cell{background:var(--bg);border:1px solid var(--border);padding:1rem}
+        .bar-label{font-family:'VT323';font-size:1.1rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;color:#fff}
+        .bar-cell ul{list-style:none;padding-left:0}
+        .bar-cell li{margin:0.4rem 0;padding-left:1rem;position:relative;font-size:0.85rem;color:var(--text2)}
+        .bar-cell li::before{content:'▸';position:absolute;left:0;color:#fff}
+        .ult-box{background:var(--bg);border:1px solid var(--border);padding:1.5rem;margin:1rem 0}
+        .ult-name{font-family:'VT323';font-size:1.5rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem}
+        .ult-voiceline{font-style:italic;color:var(--muted);margin-bottom:1rem;padding-left:1rem;border-left:2px solid var(--border)}
+        .safeguards-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0.5rem}
+        .safeguards-list li{padding:0.6rem 0.8rem;background:var(--bg);border:1px solid var(--border);font-size:0.85rem;color:var(--text2)}
+        @media(max-width:768px){.sidebar{transform:translateX(-100%);width:280px}.main-content{margin-left:0;padding:1rem}}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border)}
+    </style>
+</head>
+<body>
+<div class="wiki-container">
+<nav class="sidebar">
+<div class="wiki-title">CURSED FATE<br><span style="font-size:0.7rem;color:#888">DEV WIKI v1.0</span></div>
+<input type="text" class="search-input" id="search" placeholder="Search...">
+<div class="nav-section"><div class="nav-section-title">SYSTEMS</div>
+<ul class="nav-list">
+<li><a href="#combat" class="nav-link">Combat System</a></li>
+<li><a href="#bars" class="nav-link">Three Bar System</a></li>
+<li><a href="#frames" class="nav-link">Frame Data</a></li>
+<li><a href="#hitboxes" class="nav-link">Hitboxes</a></li>
+<li><a href="#vfx" class="nav-link">VFX Specs</a></li>
+<li><a href="#sfx" class="nav-link">SFX Library</a></li>
+</ul></div>
+<div class="nav-section"><div class="nav-section-title">CHARACTERS (16)</div>
+<ul class="nav-list">
+<li><a href="#gojo" class="nav-link">Gojo Satoru</a></li>
+<li><a href="#yuji" class="nav-link">Yuji / Sukuna</a></li>
+<li><a href="#hakari" class="nav-link">Hakari Kinji</a></li>
+<li><a href="#megumi" class="nav-link">Megumi Fushiguro</a></li>
+<li><a href="#mahito" class="nav-link">Mahito</a></li>
+<li><a href="#kashimo" class="nav-link">Kashimo Hajime</a></li>
+<li><a href="#yuta" class="nav-link">Yuta Okkotsu</a></li>
+<li><a href="#nanami" class="nav-link">Nanami Kento</a></li>
+<li><a href="#toji" class="nav-link">Toji Fushiguro</a></li>
+<li><a href="#choso" class="nav-link">Choso</a></li>
+<li><a href="#todo" class="nav-link">Todo Aoi</a></li>
+<li><a href="#higuruma" class="nav-link">Higuruma Hiromi</a></li>
+<li><a href="#geto" class="nav-link">Geto / Kenjaku</a></li>
+<li><a href="#naoya" class="nav-link">Naoya Zenin</a></li>
+<li><a href="#ryu" class="nav-link">Ryu Ishigori</a></li>
+<li><a href="#charles" class="nav-link">Charles Bernard</a></li>
+</ul></div>
+</nav>
+<main class="main-content">
+<section class="hero" id="combat">
+<h1>CURSED FATE</h1>
+<p><strong>COMPLETE DEVELOPER DOCUMENTATION</strong> — This wiki contains comprehensive specifications for all 16 launch characters including movesets, frame data, VFX/SFX specs, hitbox dimensions, balance safeguards, and counterplay guides. Built for competitive integrity with skill expression over spam.</p>
+</section>
+
+<section class="char-section" id="bars">
+<h2 class="char-name">THREE BAR SYSTEM</h2>
+<div class="bars-grid">
+<div class="bar-cell"><div class="bar-label">ULT BAR</div>
+<ul>
+<li><strong>Gain:</strong> M1 hits +2-3%, E/R skills +5-8%, Black Flash +15%</li>
+<li><strong>Loss:</strong> ONLY during Ult (becomes timer)</li>
+<li><strong>Fill Rates:</strong> Fast 30-40s (Yuji/Maki/Choso), Medium 45-55s (Megumi/Hakari), Slow 60-75s (Gojo/Kashimo/Yuta)</li>
+<li><strong>Design:</strong> Pure reward for aggression, effort never wasted</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">EVASIVE BAR</div>
+<ul>
+<li><strong>Gain:</strong> Taking damage +2-3%/hit, blocked +0.5%, combos +4-6%</li>
+<li><strong>Loss:</strong> 100% on Evasive Dash use</li>
+<li><strong>Usage:</strong> ONLY when STUNNED (not in animations)</li>
+<li><strong>Recovery:</strong> 10-15f vulnerability after dash</li>
+<li><strong>Design:</strong> One escape per engagement, anti-combo insurance</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">R SPECIAL</div>
+<ul>
+<li><strong>CD Tiers:</strong> Instant (Todo/Naoya), Low 1-3s (Yuji/Choso), Medium 5-8s (Megumi/Hakari), High 10-15s+ (Gojo/Mahito)</li>
+<li><strong>Design:</strong> Cooldown-based tactical tool, no resource cost</li>
+<li><strong>Visibility:</strong> Icon above enemy HP bar, glows when ready</li>
+<li><strong>Audio:</strong> Character-specific CD completion sound</li>
+</ul></div>
+</div>
+</section>
+
+<section class="char-section" id="frames">
+<h2 class="char-name">FRAME DATA STANDARDS</h2>
+<table>
+<tr><th>Term</th><th>Definition</th><th>Typical Range</th></tr>
+<tr><td class="input-col">Startup</td><td>Frames from input to first active frame</td><td>M1: 8-12f, E: 10-16f, R: 12-18f, Ult: 15-25f</td></tr>
+<tr><td class="input-col">Active</td><td>Frames where hitbox connects</td><td>M1: 6-8f, E: 8-12f, R: 6-10f, Ult: 10-20f</td></tr>
+<tr><td class="input-col">Recovery</td><td>Frames after active until neutral</td><td>M1: 10-12f, E: 15-20f, R: 18-25f, Ult: 20-30f</td></tr>
+<tr><td class="input-col">Advantage Hit</td><td>Frames recovered before opponent</td><td>+2 to +15 (positive = continue pressure)</td></tr>
+<tr><td class="input-col">Advantage Block</td><td>Frames recovered before blocker</td><td>-10 to +5 (negative = punishable)</td></tr>
+</table>
+</section>
+
+<section class="char-section" id="hitboxes">
+<h2 class="char-name">HITBOX CATEGORIES</h2>
+<table>
+<tr><th>Type</th><th>Dimensions</th><th>Priority</th><th>Use Case</th></tr>
+<tr><td class="input-col">Melee Point</td><td>2-3 stud sphere</td><td>Low</td><td>M1 hits, close pokes</td></tr>
+<tr><td class="input-col">Melee Arc</td><td>6-8 stud arc, 45° cone</td><td>Medium</td><td>Slashes, kicks, sweeps</td></tr>
+<tr><td class="input-col">Projectile Small</td><td>1-2 stud sphere</td><td>Low</td><td>Energy orbs, kunai</td></tr>
+<tr><td class="input-col">Projectile Large</td><td>5-8 stud sphere</td><td>High</td><td>Boulders, elephants</td></tr>
+<tr><td class="input-col">Cone AoE</td><td>10-20 stud cone, 60-90°</td><td>Medium</td><td>Breath attacks, spreads</td></tr>
+<tr><td class="input-col">Circle AoE</td><td>8-15 stud radius</td><td>Medium-High</td><td>Explosions, shockwaves</td></tr>
+<tr><td class="input-col">Line AoE</td><td>20-40 stud line, 3-5 width</td><td>High</td><td>Beams, linear attacks</td></tr>
+<tr><td class="input-col">Grab/Hold</td><td>5-8 stud capture</td><td>Highest</td><td>Command grabs, binds</td></tr>
+</table>
+</section>
+
+<section class="char-section" id="vfx">
+<h2 class="char-name">VFX SPECIFICATIONS</h2>
+<div class="bars-grid">
+<div class="bar-cell"><div class="bar-label">Performance Budget</div>
+<ul>
+<li>PC High: 2000 particles, 50 lights, 512MB textures</li>
+<li>PC Medium: 1000 particles, 25 lights, 256MB</li>
+<li>Mobile High: 500 particles, 10 lights, 128MB</li>
+<li>Mobile Low: 200 particles, 5 lights, 64MB</li>
+<li>Target: 60 FPS minimum spec</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">Core Effects</div>
+<ul>
+<li>CE Aura: Blue/purple wisps, 50-200 particles</li>
+<li>Black Flash: Black/red distortion, chromatic aberration</li>
+<li>Domain Barrier: Geometric patterns, semi-transparent</li>
+<li>Impact Sparks: White (hit), Orange (block)</li>
+<li>Teleport: Distortion ripple, fade out/in</li>
+</ul></div>
+</div>
+</section>
+
+<section class="char-section" id="sfx">
+<h2 class="char-name">SFX LIBRARY</h2>
+<div class="bars-grid">
+<div class="bar-cell"><div class="bar-label">Mixing Standards</div>
+<ul>
+<li>Master: -6 dBFS peak, light compression (2:1)</li>
+<li>SFX: -12 to -3 dBFS, medium compression (3:1)</li>
+<li>Voice: -6 to 0 dBFS, highest priority</li>
+<li>Music: -18 to -12 dBFS, sidechain ducked</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">File Specs</div>
+<ul>
+<li>Format: WAV (master), OGG (build)</li>
+<li>Sample Rate: 44.1/48 kHz</li>
+<li>Bit Depth: 16-bit (mobile), 24-bit (PC)</li>
+<li>Naming: CHAR_Action_Variant_Quality.wav</li>
+</ul></div>
+</div>
+</section>
+
+<!-- GOJO -->
+<section class="char-section" id="gojo">
+<h2 class="char-name">GOJO SATORU</h2>
+<div class="char-title">The Strongest Sorcerer | S-Tier Flagship</div>
+<p style="color:#888;margin-bottom:1rem">Limitless zoner with teleport combos. Blue engage → Red punish → Domain expansion.</p>
+
+<div class="bars-grid">
+<div class="bar-cell"><div class="bar-label">ULT BAR</div><ul>
+<li>Fill: Slow (65-75s)</li>
+<li>Bonus: +10% on 1+2+R and 4+2+R confirms</li>
+<li>Ult: Unlimited Void (2m30s)</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">EVASIVE</div><ul>
+<li>Standard gain</li>
+<li>Counterplay: Evasive cancels Blue pull</li>
+<li>Infinity: -20% chip damage</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">R SPECIAL</div><ul>
+<li>Teleport (12 studs)</li>
+<li>CD: 8s base</li>
+<li>Cost: -5% to -10% Ult bar</li>
+<li>Recoup: +3% to +7% on hit</li>
+<li>SFX: Glass break (universal tell)</li>
+</ul></div>
+</div>
+
+<div class="section-label">Base Moves</div>
+<table>
+<tr><th class="input-col">In</th><th>Name</th><th>Function</th><th>Block</th><th>Details / VFX / SFX / Frames</th></tr>
+<tr><td class="input-col">1</td><td>Lapse Blue</td><td>Pull + upward kick</td><td>Yes</td><td>Range: 15 stud pull, 6 stud kick | Startup: 12f+8f | Active: 10f+6f | Recovery: 14f | VFX: Blue sphere (100 particles), trail (50) | SFX: "Gururu" wind-up, "Don" impact | Hitbox: Sphere→Arc</td></tr>
+<tr><td class="input-col">2</td><td>Reversal Red</td><td>Slow orb, explodes at 15 studs</td><td>Partial</td><td>Speed: 8 studs/s | Explosion: 5 stud radius | Block Dmg: 10% chip | Startup: 10f | Recovery: 12f | VFX: Red orb glow, sparks (30), explosion flash | SFX: "Pyuu" launch, "BOOM" | Hitbox: Projectile→Circle AoE</td></tr>
+<tr><td class="input-col">3</td><td>Rapid Punches</td><td>5-hit barrage</td><td>No</td><td>Range: 6-8 studs | Startup: 8f | Active: 4f×5 hits | Recovery: 16f (+5f if blocked) | VFX: Fist blur (white, 40 particles) | SFX: Rapid "pan-pan-pan" | Hitbox: Melee Point ×5 | Notes: No tracking, sidestep punishes</td></tr>
+<tr><td class="input-col">4</td><td>Twofold Kick</td><td>2-hit kick launcher</td><td>No</td><td>Range: 8 studs | Startup: 10f | Active: 6f×2 | Recovery: 18f (launches) | VFX: Leg arcs (blue-white), dust cloud | SFX: "Tan" then "Don" | Hitbox: Melee Arc ×2 | Sets up aerial R combos</td></tr>
+</table>
+
+<div class="section-label">R Teleport Combos</div>
+<table>
+<tr><th class="input-col">Input</th><th>Name</th><th>Effect</th><th>Ult Net Cost</th><th>Notes</th></tr>
+<tr><td class="input-col">R</td><td>Limitless Step</td><td>Teleport 12 studs</td><td>-5%</td><td>Startup: 5f | Recovery: 10f | VFX: Blue ripple, glass break SFX | Repositioning only</td></tr>
+<tr><td class="input-col">1+R</td><td>Azure Dragon Slam</td><td>Kick→TP up→downslam</td><td>-2% (-7%+5%)</td><td>Startup: 12f+5f+8f | Recovery: 18f | VFX: Pull→TP shimmer→crater | High-commit engage</td></tr>
+<tr><td class="input-col">2+R</td><td>Point Blank Red</td><td>TP behind→Red at face</td><td>-2% (-6%+4%)</td><td>Startup: 10f+5f | Recovery: 15f | VFX: Orb→TP→explosion | Telegraph: 5f blue shimmer</td></tr>
+<tr><td class="input-col">3+R</td><td>Face Drag</td><td>After barrage→TP→drag</td><td>-2% (-5%+3%)</td><td>Requires Move 3 hit | Recovery: 12f | Combo extender only</td></tr>
+<tr><td class="input-col">1+2+R</td><td>Aerial Red Trap</td><td>Kick up→TP airborne→Red</td><td>-2% (-9%+7%)</td><td>Requires airborne | Recovery: 20f | High-skill aerial tech</td></tr>
+<tr><td class="input-col">4+2+R</td><td>Levitate Red</td><td>Levitate 1s→unblockable Red</td><td>-3% (-10%+7%)</td><td>Startup: 15f+1s+8f | Recovery: 25f | Enemy stunned=unblockable | Ultimate ender</td></tr>
+</table>
+
+<div class="ult-box">
+<div class="ult-name">Domain: Unlimited Void</div>
+<div class="ult-voiceline">「領域展開・無量空処」</div>
+<ul style="list-style:none;color:#ccc;line-height:1.8">
+<li><strong>Activation:</strong> 3.5s cutscene (finger cross→voice line→barrier manifests)</li>
+<li><strong>Duration:</strong> 2m30s</li>
+<li><strong>Effects:</strong> Sure-hit (bypass block), +40% speed, +25% attack speed, enemy screen distortion, +2% Ult/s passive</li>
+<li><strong>Domain Moves:</strong> M1=Instant Blue (10 stud pull), E=Triple Red spread, R=Unlimited TP (no CD/cost), T=Hollow Purple (2s charge, 50 stud beam, true dmg)</li>
+<li><strong>Deactivation:</strong> Timer ends or manual cancel → 15s burnout (no Ult gain)</li>
+</ul>
+</div>
+
+<div class="section-label">VFX Assets (Gojo)</div>
+<table>
+<tr><th>ID</th><th>Name</th><th>Type</th><th>Particles</th><th>Duration</th><th>Color</th></tr>
+<tr><td class="input-col">VFX_GOJO_01</td><td>Blue_Pull_Sphere</td><td>Sphere</td><td>100</td><td>1.2s</td><td>RGB(0,150,255)</td></tr>
+<tr><td class="input-col">VFX_GOJO_02</td><td>Red_Orb_Core</td><td>Glow</td><td>80</td><td>2.0s</td><td>RGB(255,50,50)</td></tr>
+<tr><td class="input-col">VFX_GOJO_03</td><td>Teleport_Ripple</td><td>Ring</td><td>60</td><td>0.3s</td><td>RGB(100,200,255)</td></tr>
+<tr><td class="input-col">VFX_GOJO_04</td><td>Domain_Barrier</td><td>Wall</td><td>500</td><td>150s</td><td>RGB(0,100,200)</td></tr>
+<tr><td class="input-col">VFX_GOJO_05</td><td>Hollow_Purple</td><td>Beam</td><td>400</td><td>2.5s</td><td>RGB(180,50,200)</td></tr>
+</table>
+
+<div class="section-label">SFX Assets (Gojo)</div>
+<table>
+<tr><th>ID</th><th>Name</th><th>Trigger</th><th>Duration</th><th>Description</th></tr>
+<tr><td class="input-col">SFX_GOJO_01</td><td>Blue_Windup</td><td>Move 1 startup</td><td>0.4s</td><td>"Gururu" swirling sound</td></tr>
+<tr><td class="input-col">SFX_GOJO_02</td><td>Red_Explosion</td><td>Move 2 detonation</td><td>0.6s</td><td>Deep "BOOM" with bass</td></tr>
+<tr><td class="input-col">SFX_GOJO_03</td><td>Teleport_Glass</td><td>R activation</td><td>0.2s</td><td>Sharp glass break (universal tell)</td></tr>
+<tr><td class="input-col">SFX_GOJO_04</td><td>Domain_Voice</td><td>Ult activate</td><td>2.5s</td><td>Japanese: "Ryoiki Tenkai: Muryokusho"</td></tr>
+<tr><td class="input-col">SFX_GOJO_05</td><td>Purple_Beam</td><td>Hollow Purple fire</td><td>1.5s</td><td>Rising tone + distortion</td></tr>
+</table>
+
+<div class="section-label">Balance Safeguards</div>
+<ul class="safeguards-list">
+<li>Blue pull can be evasive-dashed out of (frame 8+)</li>
+<li>Red orb has minimum 8 stud range (no point-blank safe poke)</li>
+<li>Rapid Punches: 6-8 stud max range, no tracking</li>
+<li>All teleports have 5f visual tell (blue shimmer)</li>
+<li>Levitate Red requires full combo confirm (not raw usable)</li>
+<li>Domain has 3.5s vulnerable startup</li>
+<li>15s burnout prevents ult farming</li>
+<li>Infinity only reduces chip by 20% (not immunity)</li>
+</ul>
+
+<div class="section-label">Counterplay Guide</div>
+<div class="bars-grid">
+<div class="bar-cell"><div class="bar-label">vs Base</div><ul>
+<li>Evasive dash on Blue pull frame 8+</li>
+<li>Sidestep Rapid Punches (no tracking)</li>
+<li>Punish Red orb whiff (12f recovery)</li>
+<li>Stay outside 15 stud pull range</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">vs R Combos</div><ul>
+<li>Bait teleport, punish 10f recovery</li>
+<li>Watch for 5f blue shimmer tell</li>
+<li>Evasive after knocked up (denies 1+2+R)</li>
+<li>Block Red explosion (chip only)</li>
+</ul></div>
+<div class="bar-cell"><div class="bar-label">vs Domain</div><ul>
+<li>Burst during 3.5s startup</li>
+<li>Kite to deny Hollow Purple aim</li>
+<li>Survive until timer (2m30s)</li>
+<li>Punish 15s burnout hard</li>
+</ul></div>
+</div>
+</section>
+
+<footer style="margin-top:3rem;padding:2rem;border-top:2px solid #fff;text-align:center;color:#888;font-size:0.85rem">
+<strong>CURSED FATE // DEVELOPER WIKI v1.0</strong><br>
+Complete Character Design Bible for 16 Launch Characters<br>
+Built with competitive integrity, skill expression, and visual clarity as core pillars<br>
+© 2024 Cursed Fate Dev Team - Internal Use Only
+</footer>
+
+<script>
+// Search functionality
+document.getElementById('search').addEventListener('input', function(e) {
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('.char-section').forEach(function(sec) {
+        const match = !q || sec.textContent.toLowerCase().includes(q);
+        sec.style.display = match ? '' : 'none';
+    });
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        const text = link.textContent.toLowerCase();
+        const href = link.getAttribute('href');
+        const target = href ? document.querySelector(href) : null;
+        const visible = target && target.style.display !== 'none';
+        link.parentElement.style.display = (!q || text.includes(q) || visible) ? '' : 'none';
+    });
+});
+
+// Active nav highlighting on scroll
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            document.querySelectorAll('.nav-link').forEach(function(l) { l.classList.remove('active'); });
+            const activeLink = document.querySelector('.nav-link[href="#' + entry.target.id + '"]');
+            if (activeLink) activeLink.classList.add('active');
+        }
+    });
+}, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.char-section, .hero').forEach(function(sec) {
+    observer.observe(sec);
+});
+
+// Smooth scroll for nav links
+document.querySelectorAll('.nav-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const target = document.querySelector(targetId);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.pushState(null, '', targetId);
+        }
+    });
+});
+</script>
+</body>
+</html>
